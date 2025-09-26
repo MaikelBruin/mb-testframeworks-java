@@ -1,1 +1,4 @@
 .idea/
+/target/
+/properties/secret.properties
+/allure-results/*.json

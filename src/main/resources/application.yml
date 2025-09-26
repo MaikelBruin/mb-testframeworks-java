@@ -1,0 +1,23 @@
+spring:
+  config:
+    import: file:properties/@properties.file@.properties
+  profiles:
+    active: ${TEST_ENV}
+    default: tst
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    mb.testframeworks: info
+
+mb-testframeworks-java:
+  is-ci: ${IS_CI}
+  test-data:
+    default-pass: ${DEFAULT_TEST_PASSWORD}
+  webdriver:
+    chromeVersion: ${CHROME_VERSION}
+
+  services:
+    petstore-v1:
+      base-path: /dam-api/1
+      connection-timeout: 20000
