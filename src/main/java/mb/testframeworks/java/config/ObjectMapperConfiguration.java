@@ -1,4 +1,4 @@
-package mb.testframeworks.java.config.clients;
+package mb.testframeworks.java.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

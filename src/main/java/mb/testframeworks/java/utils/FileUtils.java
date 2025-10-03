@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 
 public class FileUtils {
 
-    // Method to create a complete path based on your logic
     public static String createCompletePath(String filePath) {
         String cwd = System.getProperty("user.dir");
         String[] rootParts = {cwd, "src/main", "resources"};
