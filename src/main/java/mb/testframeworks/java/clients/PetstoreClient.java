@@ -7,23 +7,25 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.extern.slf4j.Slf4j;
 import mb.testframeworks.java.models.petstore.Pet;
+import mb.testframeworks.java.utils.JerseyRequestFilter;
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 import java.util.List;
 
 /**
  * A client wrapper for the Petstore API using a Jersey 3 (JAX-RS) Client.
  */
+@Slf4j
 public class PetstoreClient {
     private static final String BASE_URL = "https://petstore3.swagger.io/api/v3";
     private final WebTarget target;
 
     public PetstoreClient() {
         ClientConfig clientConfig = new ClientConfig();
-        clientConfig.register(JacksonJaxbJsonProvider.class);
         Client client = ClientBuilder.newClient(clientConfig);
+        client.register(new JerseyRequestFilter(PetstoreClient.class));
         this.target = client.target(BASE_URL);
     }
 
@@ -34,7 +36,7 @@ public class PetstoreClient {
      * @return The Pet object returned by the server (often includes the generated ID).
      */
     public Pet addPet(Pet pet) {
-        System.out.println("-> POST /pet: Adding pet: " + pet.getName());
+        log.info("-> POST /pet: Adding pet: {}", pet.getName());
         try (Response response = target.path("pet")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(pet))) {
@@ -45,7 +47,7 @@ public class PetstoreClient {
             }
 
             Pet newPet = response.readEntity(Pet.class);
-            System.out.println("<- Pet added successfully. ID: " + newPet.getId());
+            log.info("<- Pet added successfully. ID: {}", newPet.getId());
             return newPet;
         }
     }
@@ -56,13 +58,13 @@ public class PetstoreClient {
      * @return The Pet object.
      */
     public Pet getPetById(long petId) {
-        System.out.println("-> GET /pet/" + petId + ": Fetching pet...");
+        log.info("-> GET /pet/{}: Fetching pet...", petId);
         try (Response response = target.path("pet").path(String.valueOf(petId))
                 .request(MediaType.APPLICATION_JSON)
                 .get()) {
 
             if (response.getStatus() == 404) {
-                System.out.println("<- Pet not found (404).");
+                log.info("<- Pet not found (404).");
                 return null;
             }
 
@@ -72,7 +74,7 @@ public class PetstoreClient {
             }
 
             Pet pet = response.readEntity(Pet.class);
-            System.out.println("<- Pet fetched successfully: " + pet.getName());
+            log.info("<- Pet fetched successfully: {}", pet.getName());
             return pet;
         }
     }
@@ -83,7 +85,7 @@ public class PetstoreClient {
      * @return A list of Pet objects.
      */
     public List<Pet> findPetsByStatus(String status) {
-        System.out.println("-> GET /pet/findByStatus?status=" + status + ": Finding pets...");
+        log.info("-> GET /pet/findByStatus?status={}: Finding pets...", status);
         try (Response response = target.path("pet/findByStatus")
                 .queryParam("status", status)
                 .request(MediaType.APPLICATION_JSON)
@@ -95,7 +97,7 @@ public class PetstoreClient {
             }
 
             List<Pet> pets = response.readEntity(new GenericType<List<Pet>>() {});
-            System.out.println("<- Found " + pets.size() + " pets with status '" + status + "'.");
+            log.info("<- Found {} pets with status '{}'.", pets.size(), status);
             return pets;
         }
     }
@@ -106,7 +108,7 @@ public class PetstoreClient {
      * @return
      */
     public List<Pet> findPetsByTag(String tag) {
-        System.out.println("-> GET /pet/findByTags?tag=" + tag + ": Finding pets...");
+        log.info("-> GET /pet/findByTags?tag={}: Finding pets...", tag);
         try (Response response = target.path("pet/findByTags")
                 .queryParam("tags", tag)
                 .request(MediaType.APPLICATION_JSON)
@@ -118,7 +120,7 @@ public class PetstoreClient {
             }
 
             List<Pet> pets = response.readEntity(new GenericType<List<Pet>>() {});
-            System.out.println("<- Found " + pets.size() + " pets with tag '" + tag + "'.");
+            log.info("<- Found {} pets with tag '{}'.", pets.size(), tag);
             return pets;
         }
     }
@@ -129,21 +131,21 @@ public class PetstoreClient {
      * @return true if successful, false otherwise.
      */
     public boolean deletePet(long petId) {
-        System.out.println("-> DELETE /pet/" + petId + ": Deleting pet...");
+        log.info("-> DELETE /pet/{}: Deleting pet...", petId);
         try (Response response = target.path("pet").path(String.valueOf(petId))
                 .request()
                 .delete()) {
 
             if (response.getStatus() == 404) {
-                System.out.println("<- Pet not found (404).");
+                log.info("<- Pet not found (404).");
                 return false;
             }
 
             if (response.getStatus() == 200) {
-                System.out.println("<- Pet deleted successfully.");
+                log.info("<- Pet deleted successfully.");
                 return true;
             } else {
-                System.out.println("<- Deletion failed. HTTP error code: " + response.getStatus());
+                log.info("<- Deletion failed. HTTP error code: {}", response.getStatus());
                 return false;
             }
         }
