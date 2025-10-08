@@ -6,7 +6,6 @@ Feature: Petstore scenarios
     When I get all pets by tag "dog" using the petstore api
     Then there should be at least 2 pets with this tag in the petstore
 
-  @flaky
   Scenario Outline: Petstore analyzer should correctly count number of pets labeled dog
     Given I get all pets by tag "<tag>" using the petstore api
     When I get the total number of pets tagged "<tag>" using the petstore analyzer api

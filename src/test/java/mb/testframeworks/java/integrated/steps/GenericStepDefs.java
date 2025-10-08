@@ -39,25 +39,38 @@ public class GenericStepDefs {
         assertThat(testDataHolder.getPetstoreFindByTagsResponse().size()).isGreaterThanOrEqualTo(expectedMinimumAmountOfPets);
     }
 
-    @Given("I have retrieved all pets labeled {string} using the petstore api")
-    public void iHaveRetrievedAllPetsLabeledUsingThePetstoreApi(String label) {
-        List<Pet> response = petstoreClient.findPetsByTag(label);
-        testDataHolder.setPetstoreFindByTagsResponse(response);
-    }
-
     @When("I get all pets by tag {string} using the petstore api")
-    public void iGetAllPetsByTagUsingThePetstoreApi(String tag) {
-        List<Pet> response = petstoreClient.findPetsByTag(tag);
+    public void iGetAllPetsByTagUsingThePetstoreApi(String tag) throws InterruptedException {
+        List<Pet> response = null;
+        int retries = 0;
+        int maxRetries = 5;
+        while (retries < maxRetries && response == null) {
+            try {
+                response = petstoreClient.findPetsByTag(tag);
+            } catch (Exception e) {
+                log.warn("petstoreClient.findPetsByTag call failed with exception, retrying another {} times...", maxRetries - retries, e);
+                Thread.sleep(2000);
+                retries++;
+            }
+        }
         testDataHolder.setPetstoreFindByTagsResponse(response);
     }
 
     @When("I get the total number of pets tagged {string} using the petstore analyzer api")
-    public void iGetTheTotalNumberOfPetsTaggedUsingThePetstoreAnalyzerApi(String tag) {
-        TotalResponse response = switch (tag.toUpperCase()) {
-            case "DOG" -> petstoreAnalyzerClient.getTotalNumberOfDogs();
-            case "CAT" -> petstoreAnalyzerClient.getTotalNumberOfCats();
-            default -> throw new IllegalArgumentException("Unknown tag: " + tag);
-        };
+    public void iGetTheTotalNumberOfPetsTaggedUsingThePetstoreAnalyzerApi(String tag) throws InterruptedException {
+        TotalResponse response = null;
+        int retries = 0;
+        int maxRetries = 5;
+        while (retries < maxRetries && response == null) {
+            try {
+                response = petstoreAnalyzerClient.findTotalNumberOfPetsByTag(tag);
+            } catch (Exception e) {
+                log.warn("petstoreAnalyzerClient.findTotalNumberOfPetsByTag call failed with exception, retrying another {} times...", maxRetries - retries, e);
+                Thread.sleep(2000);
+                retries++;
+            }
+        }
+
         testDataHolder.setAnalyzerGetTotalNumberOfPetsWithLabelResponse(response);
     }
 
@@ -67,12 +80,11 @@ public class GenericStepDefs {
         int retries = 0;
         int maxRetries = 5;
         while (retries < maxRetries && response == null) {
-            log.warn("hello");
             try {
                 response = petstoreClient.findPetsByStatus(status);
             } catch (Exception e) {
-                log.warn("petstoreClient call failed with exception, retrying another {} times...", maxRetries - retries, e);
-                Thread.sleep(5000);
+                log.warn("petstoreClient.findPetsByStatus call failed with exception, retrying another {} times...", maxRetries - retries, e);
+                Thread.sleep(2000);
                 retries++;
             }
         }
@@ -89,8 +101,8 @@ public class GenericStepDefs {
             try {
                 response = petstoreAnalyzerClient.getTotalNumberOfAvailablePets();
             } catch (Exception e) {
-                log.warn("petstoreAnalyzerClient call failed with exception, retrying another {} times...", maxRetries - retries, e);
-                Thread.sleep(5000);
+                log.warn("petstoreAnalyzerClient.getTotalNumberOfAvailablePets call failed with exception, retrying another {} times...", maxRetries - retries, e);
+                Thread.sleep(2000);
                 retries++;
             }
         }

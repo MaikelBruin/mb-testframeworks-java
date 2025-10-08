@@ -121,4 +121,29 @@ public class PetstoreAnalyzerClient {
             return totalResponse;
         }
     }
+
+    /**
+     * Finds the total number of pets by tag (GET /api/totals?tag={tag}).
+     * @param tag The tag to filter pets by.
+     * @return The TotalResponse object containing the count.
+     */
+    public TotalResponse findTotalNumberOfPetsByTag(String tag) {
+        log.info("-> GET /api/totals?tag={}: Finding total pets by tag...", tag);
+        final String path = "api/totals";
+
+        try (Response response = target.path(path)
+                .queryParam("tag", tag) // <-- This line handles the query parameter
+                .request(MediaType.APPLICATION_JSON)
+                .get()) {
+
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Failed to find total pets by tag. HTTP error code: "
+                        + response.getStatus() + ". Body: " + response.readEntity(String.class));
+            }
+
+            TotalResponse totalResponse = response.readEntity(TotalResponse.class);
+            log.info("<- Found total of {} pets with tag '{}'.", totalResponse.getTotal(), tag);
+            return totalResponse;
+        }
+    }
 }
