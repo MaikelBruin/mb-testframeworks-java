@@ -2,6 +2,7 @@ package mb.testframeworks.java.data.test;
 
 import lombok.Getter;
 import lombok.Setter;
+import mb.testframeworks.java.models.analyzer.TotalResponse;
 import mb.testframeworks.java.models.petstore.Pet;
 
 import java.util.List;
@@ -11,7 +12,10 @@ import java.util.List;
 public class TestDataHolder {
     private String testEnv;
     private Exception apiException;
-    private List<Pet> findByTagsResponse;
+    private List<Pet> petstoreFindByTagsResponse;
+    private List<Pet> petstoreFindByStatusResponse;
+    private TotalResponse analyzerGetTotalNumberOfPetsWithLabelResponse;
+    private TotalResponse analyzerGetTotalNumberOfAvailablePetsResponse;
 
     public TestDataHolder(String testEnv) {
         this.testEnv = testEnv;

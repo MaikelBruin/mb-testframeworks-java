@@ -19,14 +19,13 @@ import java.util.List;
  */
 @Slf4j
 public class PetstoreClient {
-    private static final String BASE_URL = "https://petstore3.swagger.io/api/v3";
     private final WebTarget target;
 
-    public PetstoreClient() {
+    public PetstoreClient(String baseUrl) {
         ClientConfig clientConfig = new ClientConfig();
         Client client = ClientBuilder.newClient(clientConfig);
         client.register(new JerseyRequestFilter(PetstoreClient.class));
-        this.target = client.target(BASE_URL);
+        this.target = client.target(baseUrl);
     }
 
     /**
@@ -96,7 +95,8 @@ public class PetstoreClient {
                         + response.getStatus() + ". Body: " + response.readEntity(String.class));
             }
 
-            List<Pet> pets = response.readEntity(new GenericType<List<Pet>>() {});
+            List<Pet> pets = response.readEntity(new GenericType<>() {
+            });
             log.info("<- Found {} pets with status '{}'.", pets.size(), status);
             return pets;
         }
@@ -119,7 +119,8 @@ public class PetstoreClient {
                         + response.getStatus() + ". Body: " + response.readEntity(String.class));
             }
 
-            List<Pet> pets = response.readEntity(new GenericType<List<Pet>>() {});
+            List<Pet> pets = response.readEntity(new GenericType<>() {
+            });
             log.info("<- Found {} pets with tag '{}'.", pets.size(), tag);
             return pets;
         }

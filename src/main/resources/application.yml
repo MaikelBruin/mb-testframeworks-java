@@ -12,12 +12,11 @@ logging:
 
 mb-testframeworks-java:
   is-ci: ${IS_CI}
-  test-data:
-    default-pass: ${DEFAULT_TEST_PASSWORD}
   webdriver:
     chromeVersion: ${CHROME_VERSION}
 
   services:
-    petstore-v1:
-      base-path: /dam-api/1
-      connection-timeout: 20000
+    petstore-v3:
+      base-url: https://petstore3.swagger.io/api/v3
+    petstore-analyzer-v1:
+      base-url: http://localhost:8080
