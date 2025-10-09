@@ -23,7 +23,7 @@ jobs:
           cache: maven
       - name: Run unit tests for testframework
         run: |
-          mvn clean test -Punit
+          mvn clean test -Punit -Dproperties.file=github
         env:
           MB_GITHUB_USERNAME: ${{ github.actor }}
           MB_GITHUB_PASS: ${{ secrets.MB_PAT }}
@@ -32,11 +32,11 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: Maven Surefire Unit Test Report
-          path: backend/target/*-reports/*.xml
+          path: target/*-reports/*.xml
           reporter: java-junit
       - name: Run integration tests
         run: |
-          mvn clean test -Pintegrated
+          mvn clean test -Pintegrated -Dproperties.file=github
         env:
           MB_GITHUB_USERNAME: ${{ github.actor }}
           MB_GITHUB_PASS: ${{ secrets.MB_PAT }}
@@ -45,5 +45,5 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: Maven Surefire Integrated Test Report
-          path: backend/target/*-reports/*.xml
+          path: target/*-reports/*.xml
           reporter: java-junit
