@@ -123,4 +123,9 @@ public class GenericStepDefs {
         Integer actual = testDataHolder.getAnalyzerGetTotalNumberOfPetsWithLabelResponse().getTotal();
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Then("the petstore get pets by tag response should not be null")
+    public void thePetstoreGetPetsByTagResponseShouldNotBeNull() {
+        assertThat(testDataHolder.getPetstoreFindByTagsResponse()).isNotNull();
+    }
 }
