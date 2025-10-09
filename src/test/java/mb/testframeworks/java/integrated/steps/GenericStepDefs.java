@@ -36,7 +36,7 @@ public class GenericStepDefs {
 
     @When("I get all pets by tag {string} using the petstore api")
     public void iGetAllPetsByTagUsingThePetstoreApi(String tag) throws InterruptedException {
-        List<mb.demos.openapi.generated.api.client.petstore.model.Pet> response = null;
+        List<Pet> response = null;
         int retries = 0;
         int maxRetries = 5;
         while (retries < maxRetries && response == null) {
