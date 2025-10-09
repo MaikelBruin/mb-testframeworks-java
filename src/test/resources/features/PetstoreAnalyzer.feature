@@ -1,4 +1,5 @@
 @all
+@petstore
 Feature: Petstore scenarios
 
   Scenario: Get pets
@@ -7,6 +8,7 @@ Feature: Petstore scenarios
     Then the petstore get pets by tag response should not be null
 
 
+  @petstore-analyzer
   Scenario Outline: Petstore analyzer should correctly count number of pets labeled dog
     Given I get all pets by tag "<tag>" using the petstore api
     When I get the total number of pets tagged "<tag>" using the petstore analyzer api
@@ -17,6 +19,7 @@ Feature: Petstore scenarios
       | dog |
       | cat |
 
+  @petstore-analyzer
   Scenario: Petstore analyzer should correctly count number of available pets
     Given I get all pets with status "available" using the petstore api
     When I get the total number of available pets using the petstore analyzer api
