@@ -1,4 +1,4 @@
-name: Service pipeline
+name: Standalone testframework pipeline
 
 on:
   push:
