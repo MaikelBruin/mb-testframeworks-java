@@ -2,8 +2,8 @@ package mb.testframeworks.java.data.test;
 
 import lombok.Getter;
 import lombok.Setter;
-import mb.testframeworks.java.models.analyzer.TotalResponse;
-import mb.testframeworks.java.models.petstore.Pet;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.model.TotalResponse;
+import mb.demos.openapi.generated.api.client.petstore.model.Pet;
 
 import java.util.List;
 
