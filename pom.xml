@@ -8,6 +8,14 @@
     <artifactId>java-spring-cucumber</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>MB github packages</name>
+            <url>https://maven.pkg.github.com/MaikelBruin/mb-pipelines-openapi-generator</url>
+        </repository>
+    </repositories>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
