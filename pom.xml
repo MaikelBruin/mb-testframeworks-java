@@ -307,6 +307,14 @@
             </properties>
         </profile>
         <profile>
+            <id>integrated-petstore</id>
+            <properties>
+                <maven.profile>integrated</maven.profile>
+                <!--suppress UnresolvedMavenProperty -->
+                <cucumber.filter.tags>@petstore and not @petstore-analyzer</cucumber.filter.tags>
+            </properties>
+        </profile>
+        <profile>
             <id>integrated-custom</id>
             <properties>
                 <maven.profile>custom</maven.profile>
