@@ -123,4 +123,24 @@ public class GenericStepDefs {
     public void thePetstoreGetPetsByTagResponseShouldNotBeNull() {
         assertThat(testDataHolder.getPetstoreFindByTagsResponse()).isNotNull();
     }
+
+    @Given("I added a pet rat to the pet store using the petstore api")
+    public void iAddedAPetRatToThePetStoreUsingThePetstoreApi() {
+        log.info("i added a pet rat to the pet store using the petstore api");
+    }
+
+    @When("I check if there are any rats available using the petstore analyzer api")
+    public void iCheckIfThereAreAnyRatsAvailableUsingThePetstoreAnalyzerApi() {
+        log.info("iCheckIfThereAreAnyRatsAvailableUsingThePetstoreAnalyzerApi");
+    }
+
+    @Then("the petstore analyzer should return {string}")
+    public void thePetstoreAnalyzerShouldReturn(String expectedString) {
+        log.info("the petstore analyzer should return {}", expectedString);
+    }
+
+    @Given("I deleted all pet rats from the pet store using the petstore api")
+    public void iDeletedAllPetRatsFromThePetStoreUsingThePetstoreApi() {
+        log.info("I deleted all pet rats from the pet store using the petstore api");
+    }
 }
