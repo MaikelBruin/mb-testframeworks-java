@@ -1,13 +1,20 @@
 package mb.testframeworks.java.integrated.steps;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.SneakyThrows;
 import mb.testframeworks.java.clients.PetstoreAnalyzerClient;
 import mb.testframeworks.java.clients.PetstoreClient;
 import mb.testframeworks.java.data.test.TestDataHolder;
+import mb.testframeworks.java.models.analyzer.HasAvailableResponse;
 import mb.testframeworks.java.models.analyzer.TotalResponse;
 import mb.testframeworks.java.models.petstore.Pet;
+import mb.testframeworks.java.models.petstore.PetRequest;
+import mb.testframeworks.java.models.petstore.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +48,10 @@ public class GenericStepDefs {
 
     @When("I get all pets by tag {string} using the petstore api")
     public void iGetAllPetsByTagUsingThePetstoreApi(String tag) throws InterruptedException {
+        testDataHolder.setPetstoreFindByTagsResponse(getAllPetsByTag(tag));
+    }
+
+    private List<Pet> getAllPetsByTag(String tag) throws InterruptedException {
         List<Pet> response = null;
         int retries = 0;
         int maxRetries = 5;
@@ -53,7 +64,7 @@ public class GenericStepDefs {
                 retries++;
             }
         }
-        testDataHolder.setPetstoreFindByTagsResponse(response);
+        return response;
     }
 
     @When("I get the total number of pets tagged {string} using the petstore analyzer api")
@@ -127,5 +138,41 @@ public class GenericStepDefs {
     @Then("the petstore get pets by tag response should not be null")
     public void thePetstoreGetPetsByTagResponseShouldNotBeNull() {
         assertThat(testDataHolder.getPetstoreFindByTagsResponse()).isNotNull();
+    }
+
+    @SneakyThrows
+    @Given("I added a pet rat to the pet store using the petstore api")
+    public void iAddedAPetRatToThePetStoreUsingThePetstoreApi() {
+        PetRequest requestBody = new PetRequest();
+        requestBody.setId(111111L);
+        requestBody.setName("Rat");
+        requestBody.setStatus("available");
+        requestBody.setTags(List.of(new Tag(1L, "rat"), new Tag(2L, "rats")));
+        log.info("-> POST pet: Adding pet: {}", new ObjectMapper().writeValueAsString(requestBody));
+        petstoreClient.addPet(requestBody);
+        Thread.sleep(2000);
+    }
+
+    @When("I check if there are any rats available using the petstore analyzer api")
+    public void iCheckIfThereAreAnyRatsAvailableUsingThePetstoreAnalyzerApi() {
+        HasAvailableResponse response = petstoreAnalyzerClient.getHasAvailableRats();
+        testDataHolder.setHasAvailableRats(response);
+    }
+
+    @Then("the petstore analyzer should return {string}")
+    public void thePetstoreAnalyzerShouldReturn(String expectedString) {
+        boolean expected = Boolean.parseBoolean(expectedString);
+        assertThat(testDataHolder.getHasAvailableRats()).isNotNull();
+        assertThat(testDataHolder.getHasAvailableRats().isHasAvailable()).isEqualTo(expected);
+    }
+
+    @SneakyThrows
+    @Given("I deleted all pet rats from the pet store using the petstore api")
+    public void iDeletedAllPetRatsFromThePetStoreUsingThePetstoreApi() {
+        List<Pet> rats = getAllPetsByTag("rat");
+        rats.forEach(pet -> petstoreClient.deletePet(pet.getId()));
+        rats = getAllPetsByTag("rats");
+        rats.forEach(pet -> petstoreClient.deletePet(pet.getId()));
+        Thread.sleep(2000);
     }
 }

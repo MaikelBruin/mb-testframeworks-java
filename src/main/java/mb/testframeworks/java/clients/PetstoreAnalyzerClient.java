@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import mb.testframeworks.java.models.analyzer.AvailabilityRatioResponse;
+import mb.testframeworks.java.models.analyzer.HasAvailableResponse;
 import mb.testframeworks.java.models.analyzer.TotalResponse;
 import mb.testframeworks.java.utils.JerseyRequestFilter;
 import org.glassfish.jersey.client.ClientConfig;
@@ -22,6 +23,23 @@ public class PetstoreAnalyzerClient {
         this.target = client.target(baseUrl);
     }
 
+    // --- Has Available endpoints
+    public HasAvailableResponse getHasAvailableRats() {
+        log.info("-> GET /api/available/rats: Getting hasAvailable rats...");
+        final String path = "api/available/rats";
+
+        try (Response response = target.path(path)
+                .request(MediaType.APPLICATION_JSON)
+                .get()) {
+
+            if (response.getStatus() != 200) {
+                throw new RuntimeException("Failed to get has available rats. HTTP error code: "
+                        + response.getStatus() + ". Body: " + response.readEntity(String.class));
+            }
+
+            return response.readEntity(HasAvailableResponse.class);
+        }
+    }
     // --- Ratios Endpoints ---
 
     /**

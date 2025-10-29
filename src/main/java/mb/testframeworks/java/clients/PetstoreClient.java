@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import mb.testframeworks.java.models.petstore.Pet;
+import mb.testframeworks.java.models.petstore.PetRequest;
 import mb.testframeworks.java.utils.JerseyRequestFilter;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -34,7 +35,7 @@ public class PetstoreClient {
      * @param pet The pet object to add.
      * @return The Pet object returned by the server (often includes the generated ID).
      */
-    public Pet addPet(Pet pet) {
+    public Pet addPet(PetRequest pet) {
         log.info("-> POST /pet: Adding pet: {}", pet.getName());
         try (Response response = target.path("pet")
                 .request(MediaType.APPLICATION_JSON)
