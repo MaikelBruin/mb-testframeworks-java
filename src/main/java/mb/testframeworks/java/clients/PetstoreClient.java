@@ -126,30 +126,4 @@ public class PetstoreClient {
             return pets;
         }
     }
-
-    /**
-     * Deletes a pet by ID (DELETE /pet/{petId}).
-     * @param petId The ID of the pet to delete.
-     * @return true if successful, false otherwise.
-     */
-    public boolean deletePet(long petId) {
-        log.info("-> DELETE /pet/{}: Deleting pet...", petId);
-        try (Response response = target.path("pet").path(String.valueOf(petId))
-                .request()
-                .delete()) {
-
-            if (response.getStatus() == 404) {
-                log.info("<- Pet not found (404).");
-                return false;
-            }
-
-            if (response.getStatus() == 200) {
-                log.info("<- Pet deleted successfully.");
-                return true;
-            } else {
-                log.info("<- Deletion failed. HTTP error code: {}", response.getStatus());
-                return false;
-            }
-        }
-    }
 }
