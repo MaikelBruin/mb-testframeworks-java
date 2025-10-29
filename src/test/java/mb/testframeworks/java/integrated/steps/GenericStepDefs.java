@@ -3,11 +3,11 @@ package mb.testframeworks.java.integrated.steps;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import mb.testframeworks.java.clients.PetstoreAnalyzerClient;
-import mb.testframeworks.java.clients.PetstoreClient;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.api.TotalsApi;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.model.TotalResponse;
+import mb.demos.openapi.generated.api.client.petstore.api.PetApi;
+import mb.demos.openapi.generated.api.client.petstore.model.Pet;
 import mb.testframeworks.java.data.test.TestDataHolder;
-import mb.testframeworks.java.models.analyzer.TotalResponse;
-import mb.testframeworks.java.models.petstore.Pet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,24 +19,19 @@ public class GenericStepDefs {
     public static Logger log = LoggerFactory.getLogger(GenericStepDefs.class);
 
     private final TestDataHolder testDataHolder;
-    private final PetstoreClient petstoreClient;
-    private final PetstoreAnalyzerClient petstoreAnalyzerClient;
+    private final PetApi petApi;
+    private final TotalsApi totalsApi;
 
 
-    public GenericStepDefs(final TestDataHolder testDataHolder, final PetstoreClient petstoreClient, final PetstoreAnalyzerClient petstoreAnalyzerClient) {
+    public GenericStepDefs(final TestDataHolder testDataHolder, final PetApi petApi, final TotalsApi totalsApi) {
         this.testDataHolder = testDataHolder;
-        this.petstoreClient = petstoreClient;
-        this.petstoreAnalyzerClient = petstoreAnalyzerClient;
+        this.petApi = petApi;
+        this.totalsApi = totalsApi;
     }
 
     @Given("I have done some configuration")
     public void iHaveDoneSomeConfiguration() {
         log.info("I have done some configuration");
-    }
-
-    @Then("there should be at least {int} pets with this tag in the petstore")
-    public void thereShouldBeAtLeastPetsWithThisTagInThePetstore(int expectedMinimumAmountOfPets) {
-        assertThat(testDataHolder.getPetstoreFindByTagsResponse().size()).isGreaterThanOrEqualTo(expectedMinimumAmountOfPets);
     }
 
     @When("I get all pets by tag {string} using the petstore api")
@@ -46,7 +41,7 @@ public class GenericStepDefs {
         int maxRetries = 5;
         while (retries < maxRetries && response == null) {
             try {
-                response = petstoreClient.findPetsByTag(tag);
+                response = petApi.findPetsByTags(List.of(tag));
             } catch (Exception e) {
                 log.warn("petstoreClient.findPetsByTag call failed with exception, retrying another {} times...", maxRetries - retries, e);
                 Thread.sleep(2000);
@@ -63,7 +58,7 @@ public class GenericStepDefs {
         int maxRetries = 5;
         while (retries < maxRetries && response == null) {
             try {
-                response = petstoreAnalyzerClient.findTotalNumberOfPetsByTag(tag);
+                response = totalsApi.findTotalNumberOfPetsByTag(tag);
             } catch (Exception e) {
                 log.warn("petstoreAnalyzerClient.findTotalNumberOfPetsByTag call failed with exception, retrying another {} times...", maxRetries - retries, e);
                 Thread.sleep(2000);
@@ -81,7 +76,7 @@ public class GenericStepDefs {
         int maxRetries = 5;
         while (retries < maxRetries && response == null) {
             try {
-                response = petstoreClient.findPetsByStatus(status);
+                response = petApi.findPetsByStatus(status);
             } catch (Exception e) {
                 log.warn("petstoreClient.findPetsByStatus call failed with exception, retrying another {} times...", maxRetries - retries, e);
                 Thread.sleep(2000);
@@ -99,7 +94,7 @@ public class GenericStepDefs {
         int maxRetries = 5;
         while (retries < maxRetries && response == null) {
             try {
-                response = petstoreAnalyzerClient.getTotalNumberOfAvailablePets();
+                response = totalsApi.getTotalNumberOfAvailablePets();
             } catch (Exception e) {
                 log.warn("petstoreAnalyzerClient.getTotalNumberOfAvailablePets call failed with exception, retrying another {} times...", maxRetries - retries, e);
                 Thread.sleep(2000);
