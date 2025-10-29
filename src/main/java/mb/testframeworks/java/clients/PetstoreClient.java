@@ -53,33 +53,6 @@ public class PetstoreClient {
     }
 
     /**
-     * Finds pet by ID (GET /pet/{petId}).
-     * @param petId The ID of the pet to fetch.
-     * @return The Pet object.
-     */
-    public Pet getPetById(long petId) {
-        log.info("-> GET /pet/{}: Fetching pet...", petId);
-        try (Response response = target.path("pet").path(String.valueOf(petId))
-                .request(MediaType.APPLICATION_JSON)
-                .get()) {
-
-            if (response.getStatus() == 404) {
-                log.info("<- Pet not found (404).");
-                return null;
-            }
-
-            if (response.getStatus() != 200) {
-                throw new RuntimeException("Failed to fetch pet. HTTP error code: "
-                        + response.getStatus() + ". Body: " + response.readEntity(String.class));
-            }
-
-            Pet pet = response.readEntity(Pet.class);
-            log.info("<- Pet fetched successfully: {}", pet.getName());
-            return pet;
-        }
-    }
-
-    /**
      * Finds pets by status (GET /pet/findByStatus?status={status}).
      * @param status The status to filter by (e.g., "available").
      * @return A list of Pet objects.
