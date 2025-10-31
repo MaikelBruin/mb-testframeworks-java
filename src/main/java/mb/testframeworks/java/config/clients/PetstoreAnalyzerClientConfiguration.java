@@ -1,6 +1,8 @@
 package mb.testframeworks.java.config.clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.api.AvailableApi;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.api.AvailableApiClient;
 import mb.demos.openapi.generated.api.client.petstore.analyzer.api.TotalsApi;
 import mb.demos.openapi.generated.api.client.petstore.analyzer.api.TotalsApiClient;
 import mb.demos.openapi.generated.api.client.petstore.analyzer.client.ApiClient;
@@ -26,6 +28,10 @@ public class PetstoreAnalyzerClientConfiguration {
         return new TotalsApiClient(createApiClient(objectMapper));
     }
 
+    @Bean
+    public AvailableApi availableApi(ObjectMapper objectMapper) {
+        return new AvailableApiClient(createApiClient(objectMapper));
+    }
 
     private ApiClient createApiClient(ObjectMapper objectMapper) {
         final ApiClient apiClient = new ApiClient();

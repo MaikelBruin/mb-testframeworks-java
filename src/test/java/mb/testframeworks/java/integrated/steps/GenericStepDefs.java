@@ -1,12 +1,18 @@
 package mb.testframeworks.java.integrated.steps;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import lombok.SneakyThrows;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.api.AvailableApi;
 import mb.demos.openapi.generated.api.client.petstore.analyzer.api.TotalsApi;
+import mb.demos.openapi.generated.api.client.petstore.analyzer.model.HasAvailableResponse;
 import mb.demos.openapi.generated.api.client.petstore.analyzer.model.TotalResponse;
 import mb.demos.openapi.generated.api.client.petstore.api.PetApi;
+import mb.demos.openapi.generated.api.client.petstore.client.ApiException;
 import mb.demos.openapi.generated.api.client.petstore.model.Pet;
+import mb.demos.openapi.generated.api.client.petstore.model.Tag;
 import mb.testframeworks.java.data.test.TestDataHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +27,16 @@ public class GenericStepDefs {
     private final TestDataHolder testDataHolder;
     private final PetApi petApi;
     private final TotalsApi totalsApi;
+    private final AvailableApi availableApi;
+    private final ObjectMapper objectMapper;
 
 
-    public GenericStepDefs(final TestDataHolder testDataHolder, final PetApi petApi, final TotalsApi totalsApi) {
+    public GenericStepDefs(final TestDataHolder testDataHolder, final PetApi petApi, final TotalsApi totalsApi, final AvailableApi availableApi, final ObjectMapper objectMapper) {
         this.testDataHolder = testDataHolder;
         this.petApi = petApi;
         this.totalsApi = totalsApi;
+        this.availableApi = availableApi;
+        this.objectMapper = objectMapper;
     }
 
     @Given("I have done some configuration")
@@ -122,5 +132,49 @@ public class GenericStepDefs {
     @Then("the petstore get pets by tag response should not be null")
     public void thePetstoreGetPetsByTagResponseShouldNotBeNull() {
         assertThat(testDataHolder.getPetstoreFindByTagsResponse()).isNotNull();
+    }
+
+    @SneakyThrows
+    @Given("I added a pet rat to the pet store using the petstore api")
+    public void iAddedAPetRatToThePetStoreUsingThePetstoreApi() {
+        Pet pet = new Pet();
+        pet.setId(121111L);
+        pet.setName("Ratjetoe");
+        pet.setStatus(Pet.StatusEnum.AVAILABLE);
+        pet.setTags(List.of(new Tag().id(1L).name("rat"), new Tag().id(2L).name("rats")));
+        log.info("adding pet with body '{}'", objectMapper.writeValueAsString(pet));
+        petApi.addPet(pet);
+        Thread.sleep(2000);
+    }
+
+    @SneakyThrows
+    @When("I check if there are any rats available using the petstore analyzer api")
+    public void iCheckIfThereAreAnyRatsAvailableUsingThePetstoreAnalyzerApi() {
+        HasAvailableResponse response = availableApi.getHasAvailableRats();
+        testDataHolder.setHasAvailableRatsResponse(response);
+    }
+
+    @Then("the petstore analyzer should return {string}")
+    public void thePetstoreAnalyzerShouldReturn(String expectedString) {
+        boolean expected = Boolean.parseBoolean(expectedString);
+        assertThat(testDataHolder.getHasAvailableRatsResponse()).isNotNull();
+        assertThat(testDataHolder.getHasAvailableRatsResponse().getHasAvailable()).isEqualTo(expected);
+    }
+
+    @SneakyThrows
+    @Given("I deleted all pet rats from the pet store using the petstore api")
+    public void iDeletedAllPetRatsFromThePetStoreUsingThePetstoreApi() {
+        List<Pet> rats = petApi.findPetsByTags(List.of("rat", "rats"));
+        rats
+            .stream()
+            .filter(pet -> pet.getId() != null)
+            .forEach(pet -> {
+                try {
+                    petApi.deletePet(pet.getId(), null);
+                } catch (ApiException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        Thread.sleep(2000);
     }
 }
