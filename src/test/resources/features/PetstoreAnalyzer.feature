@@ -23,3 +23,15 @@ Feature: Petstore scenarios
     Given I get all pets with status "available" using the petstore api
     When I get the total number of available pets using the petstore analyzer api
     Then the total number of available pets from the analyzer api should be equal to the total from the petstore api
+
+  @petstore-analyzer
+  Scenario: hasAvailableRats should return true if there are rats
+    Given I added a pet rat to the pet store using the petstore api
+    When I check if there are any rats available using the petstore analyzer api
+    Then the petstore analyzer should return "true"
+
+  @petstore-analyzer
+  Scenario: hasAvailableRats should return false if there aren't any rats
+    Given I deleted all pet rats from the pet store using the petstore api
+    When I check if there are any rats available using the petstore analyzer api
+    Then the petstore analyzer should return "false"
