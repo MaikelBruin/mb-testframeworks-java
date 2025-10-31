@@ -48,8 +48,8 @@ public class PetstoreAnalyzerClient {
      * @return The AvailabilityRatioResponse object.
      */
     public AvailabilityRatioResponse getPetAvailabilityRatio() {
-        log.info("-> GET /api/ratios/availablity: Getting pet availability ratio...");
-        final String path = "api/ratios/availablity";
+        log.info("-> GET /api/ratios/availability: Getting pet availability ratio...");
+        final String path = "api/ratios/availability";
 
         try (Response response = target.path(path)
                 .request(MediaType.APPLICATION_JSON)
