@@ -273,8 +273,18 @@
         </dependency>
         <!-- END self-managed public dependencies -->
 
-        <!-- generated clients -->
-        <!-- end generated clients -->
+        <!-- GENERATED CLIENT: please note that generated client dependencies should come from your own private artifact repository, e.g. nexus/jfrog -->
+        <dependency>
+            <groupId>mb.demos.openapi.generated.api.client</groupId>
+            <artifactId>petstore</artifactId>
+            <version>1.0.27</version>
+        </dependency>
+        <dependency>
+            <groupId>mb.demos.openapi.generated.api.client</groupId>
+            <artifactId>petstore-analyzer</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- END GENERATED CLIENT -->
     </dependencies>
 
     <profiles>
