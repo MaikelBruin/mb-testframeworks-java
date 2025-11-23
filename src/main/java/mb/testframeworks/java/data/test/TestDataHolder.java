@@ -2,6 +2,7 @@ package mb.testframeworks.java.data.test;
 
 import lombok.Getter;
 import lombok.Setter;
+import mb.testframeworks.java.models.analyzer.HasAvailableResponse;
 import mb.testframeworks.java.models.analyzer.TotalResponse;
 import mb.testframeworks.java.models.petstore.Pet;
 
@@ -16,6 +17,7 @@ public class TestDataHolder {
     private List<Pet> petstoreFindByStatusResponse;
     private TotalResponse analyzerGetTotalNumberOfPetsWithLabelResponse;
     private TotalResponse analyzerGetTotalNumberOfAvailablePetsResponse;
+    private HasAvailableResponse hasAvailableRats;
 
     public TestDataHolder(String testEnv) {
         this.testEnv = testEnv;
