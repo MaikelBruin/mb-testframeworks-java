@@ -2,6 +2,11 @@
 @petstore
 Feature: Petstore scenarios
 
+  Scenario: Delete all pets
+    Given I have done some configuration
+    And I get all pets with status "available" using the petstore api
+    When I deleted all pets from the pet store using the petstore api
+
   Scenario: Get pets
     Given I have done some configuration
     When I get all pets by tag "dog" using the petstore api

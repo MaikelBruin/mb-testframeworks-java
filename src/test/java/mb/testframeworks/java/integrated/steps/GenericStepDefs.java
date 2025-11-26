@@ -1,7 +1,5 @@
 package mb.testframeworks.java.integrated.steps;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -174,5 +172,10 @@ public class GenericStepDefs {
         rats = getAllPetsByTag("rats");
         rats.forEach(pet -> petstoreClient.deletePet(pet.getId()));
         Thread.sleep(2000);
+    }
+
+    @When("I deleted all pets from the pet store using the petstore api")
+    public void iDeletedAllPetsFromThePetStoreUsingThePetstoreApi() {
+        testDataHolder.getPetstoreFindByStatusResponse().forEach(pet -> petstoreClient.deletePet(pet.getId()));
     }
 }
