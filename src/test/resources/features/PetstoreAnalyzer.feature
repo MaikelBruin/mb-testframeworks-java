@@ -2,10 +2,16 @@
 @petstore
 Feature: Petstore scenarios
 
-  Scenario: Delete all pets
+  Scenario Outline: Delete all pets with status - <status>
     Given I have done some configuration
-    And I get all pets with status "available" using the petstore api
+    And I get all pets with status "<status>" using the petstore api
     When I deleted all pets from the pet store using the petstore api
+
+    Examples: statuses
+      | status    |
+      | available |
+      | sold      |
+      | pending   |
 
   Scenario: Get pets
     Given I have done some configuration
